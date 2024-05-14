@@ -1,6 +1,7 @@
 package org.example.maildemo.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.example.maildemo.dto.UserDto;
 import org.example.maildemo.entity.User;
 import org.example.maildemo.service.UserFacade;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,4 +20,10 @@ public class UserApi {
     public List<User> getUsers() {
         return userFacade.getUsers();
     }
+
+    @GetMapping("/token-user")
+    public UserDto getUserByToken(){
+        return userFacade.getUserByToken();
+    }
+
 }

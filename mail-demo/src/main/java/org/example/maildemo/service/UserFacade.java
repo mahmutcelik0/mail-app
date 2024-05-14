@@ -2,6 +2,7 @@ package org.example.maildemo.service;
 
 import lombok.RequiredArgsConstructor;
 import org.example.maildemo.dto.RegisterRequest;
+import org.example.maildemo.dto.UserDto;
 import org.example.maildemo.entity.User;
 import org.example.maildemo.model.ResponseMessage;
 import org.springframework.http.ResponseEntity;
@@ -23,5 +24,9 @@ public class UserFacade {
 
     public List<User> getUsers() {
         return userService.getUsers();
+    }
+
+    public UserDto getUserByToken() {
+        return userService.getUserByToken();
     }
 }

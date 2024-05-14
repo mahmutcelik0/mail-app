@@ -4,12 +4,16 @@ import lombok.RequiredArgsConstructor;
 import org.example.maildemo.constants.CustomResponseMessage;
 import org.example.maildemo.dto.MailUserDto;
 import org.example.maildemo.dto.RegisterRequest;
+import org.example.maildemo.dto.UserDto;
 import org.example.maildemo.entity.User;
 import org.example.maildemo.exception.NotFoundException;
 import org.example.maildemo.model.ResponseMessage;
+import org.example.maildemo.populator.UserDtoPopulator;
 import org.example.maildemo.repository.UserRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,6 +24,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
+    private final UserDtoPopulator userDtoPopulator;
 
     public User findUserByMail(String email) throws NotFoundException {
         return userRepository.findByEmail(email).orElseThrow(()-> new NotFoundException(CustomResponseMessage.USER_NOT_FOUND));
@@ -55,5 +60,10 @@ public class UserService {
                 throw new RuntimeException(ex);
             }
         }).collect(Collectors.toSet());
+    }
+
+    public UserDto getUserByToken() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        return userDtoPopulator.populate(userRepository.findByEmail(authentication.getPrincipal().toString()).orElse(null));
     }
 }
