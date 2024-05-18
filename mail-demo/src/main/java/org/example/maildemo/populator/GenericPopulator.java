@@ -17,7 +17,11 @@ public abstract class GenericPopulator<Source, Target> {
         return sources.stream().map(this::populate).toList();
     }
 
-    public Set<Target> populateAll(Set<Source> sources) {
+    public Set<Target> populateAlltoSet(Set<Source> sources) {
         return sources.stream().map(this::populate).collect(Collectors.toSet());
+    }
+
+    public List<Target> populateAlltoList(Set<Source> sources) {
+        return sources.stream().map(this::populate).toList();
     }
 }

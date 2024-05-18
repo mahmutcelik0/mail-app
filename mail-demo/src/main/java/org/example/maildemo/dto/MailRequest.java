@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.Set;
+import java.util.List;
 
 @Getter
 @Setter
@@ -13,7 +13,8 @@ import java.util.Set;
 @AllArgsConstructor
 public class MailRequest {
     private String content;
-    private Set<MailUserDto> to;
-    private Set<String> tags;
+    private List<MailUserDto> to;
+    private List<String> tags;
     private String title;
+    private MailDto repliedMail;
 }

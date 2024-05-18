@@ -33,4 +33,13 @@ public class Mail {
     private List<UserMail> userMails;
 
     private String title;
+
+    @ManyToOne(cascade = {CascadeType.DETACH,CascadeType.MERGE,CascadeType.PERSIST,CascadeType.REFRESH})
+    private User sender;
+
+    @ManyToMany
+    private Set<Mail> parent = new HashSet<>();
+
+    @ManyToMany(mappedBy = "parent")
+    private Set<Mail> child = new HashSet<>();
 }

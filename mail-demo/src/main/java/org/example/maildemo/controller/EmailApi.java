@@ -18,7 +18,7 @@ public class EmailApi {
     private final EmailService emailService;
 
     @PostMapping
-    public ResponseEntity<String> sendEmail(@RequestBody MailRequest mailRequest) {
+    public ResponseEntity<ResponseMessage> sendEmail(@RequestBody MailRequest mailRequest) throws NotFoundException {
         return emailService.sendEmail(mailRequest);
     }
 

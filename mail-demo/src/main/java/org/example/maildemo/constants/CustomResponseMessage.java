@@ -1,5 +1,7 @@
 package org.example.maildemo.constants;
 
+import java.util.function.Supplier;
+
 public class CustomResponseMessage {
     public static final String ACCOUNT_BLOCKED = "Account blocked";
     public static final String USER_NOT_FOUND = "User Not Found";
@@ -11,4 +13,6 @@ public class CustomResponseMessage {
     public static final String EMAIL_SENT_SUCCESSFULLY = "Email sent successfully";
     public static final String USER_MAIL_NOT_FOUND = "User mail not found";
     public static final String SUCCESS = "Success";
+    public static final String USER_CAN_NOT_SEND_EMAIL_SELF = "User cannot send email himself/herself";
+    public static final String EMAIL_DOES_NOT_EXIST = "Email does not exist";
 }

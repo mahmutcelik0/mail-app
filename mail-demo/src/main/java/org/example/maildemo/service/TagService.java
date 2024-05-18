@@ -23,7 +23,7 @@ public class TagService {
         tagRepository.save(tag);
     }
 
-    public Set<Tag> findTags(Set<String> tags) {
+    public Set<Tag> findTags(List<String> tags) {
         return tags.stream().map(e-> {
             try {
                 return tagRepository.findTagByName(e).orElseThrow(()-> new NotFoundException("TAG NOT FOUND"));

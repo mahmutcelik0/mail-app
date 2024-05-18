@@ -52,7 +52,7 @@ public class UserService {
         return userRepository.findAll();
     }
 
-    public Set<User> findUsers(Set<MailUserDto> to) {
+    public Set<User> findUsers(List<MailUserDto> to) {
         return to.stream().map(e-> {
             try {
                 return findUserByMail(e.getEmail());

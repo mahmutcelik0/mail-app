@@ -1,5 +1,6 @@
 package org.example.maildemo.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Size;
@@ -34,4 +35,8 @@ public class User {
 
     @OneToMany(cascade = {CascadeType.DETACH,CascadeType.MERGE,CascadeType.PERSIST,CascadeType.REFRESH},mappedBy = "user")
     private List<UserMail> userMails;
+
+    @JsonIgnore
+    @OneToMany(cascade = CascadeType.ALL,mappedBy = "sender")
+    private List<Mail> mail;
 }
