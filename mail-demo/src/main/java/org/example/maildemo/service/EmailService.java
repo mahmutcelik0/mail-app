@@ -57,10 +57,13 @@ public class EmailService {
             .parent(parent == null ? null : Set.of(parent))
             .build();
 
+        if(!CollectionUtils.isEmpty(mail.getParent())){
             mail.getParent().forEach(e-> {
                 if(CollectionUtils.isEmpty(e.getChild())) e.setChild(Set.of(e));
                 else e.getChild().add(e);
             });
+        }
+
 
         List<UserMail> userMails = toUsers.stream().map(e -> UserMail.builder().user(e).mail(mail).mailBoxTypes(MailBoxTypes.INBOX).isRead(false).build()).toList();
         userMailService.saveAll(userMails);
