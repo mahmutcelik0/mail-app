@@ -23,12 +23,12 @@ public class UserMailService {
     }
 
 
-    public ResponseEntity<ResponseMessage> updateUserEmail(UserMailDto userMailDto) throws NotFoundException {
+    public UserMail updateUserEmail(UserMailDto userMailDto) throws NotFoundException {
         UserMail userMail = userMailRepository.findByUserEmailAndMailId(userMailDto.getUser().getEmail(), userMailDto.getMail().getId()).orElseThrow(() -> new NotFoundException(CustomResponseMessage.USER_MAIL_NOT_FOUND));
         userMail.setMailBoxTypes(userMailDto.getMailBoxTypes() != null ? userMailDto.getMailBoxTypes() : userMail.getMailBoxTypes());
         userMail.setRead(userMailDto.isRead());
         userMailRepository.save(userMail);
-        return ResponseEntity.ok(new ResponseMessage(HttpStatus.OK,CustomResponseMessage.SUCCESS));
+        return userMailRepository.save(userMail);
     }
 
     public ResponseEntity<ResponseMessage> deleteUserEmail(UserMailDto userMailDto) throws NotFoundException {

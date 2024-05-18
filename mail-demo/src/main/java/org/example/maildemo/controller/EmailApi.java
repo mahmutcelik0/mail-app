@@ -28,7 +28,7 @@ public class EmailApi {
     }
 
     @PostMapping("/update")
-    public ResponseEntity<ResponseMessage> updateUserEmail(@RequestBody UserMailDto userMailDto) throws NotFoundException {
+    public ResponseEntity<UserMailDto> updateUserEmail(@RequestBody UserMailDto userMailDto) throws NotFoundException {
         return emailService.updateUserEmail(userMailDto);
     }
 

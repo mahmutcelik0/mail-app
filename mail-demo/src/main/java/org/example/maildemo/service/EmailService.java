@@ -66,7 +66,8 @@ public class EmailService {
         }
 
 
-        List<UserMail> userMails = toUsers.stream().map(e -> UserMail.builder().user(e).mail(mail).mailBoxTypes(MailBoxTypes.INBOX).isRead(false).build()).toList();
+        List<UserMail> userMails = new java.util.ArrayList<>(toUsers.stream().map(e -> UserMail.builder().user(e).mail(mail).mailBoxTypes(MailBoxTypes.INBOX).isRead(false).build()).toList());
+        userMails.add(UserMail.builder().user(userService.findUserByMail(senderMail)).mail(mail).mailBoxTypes(MailBoxTypes.SENT).isRead(false).build());
         userMailService.saveAll(userMails);
         return ResponseEntity.ok(new ResponseMessage(HttpStatus.OK, CustomResponseMessage.EMAIL_SENT_SUCCESSFULLY));
     }
@@ -90,8 +91,8 @@ public class EmailService {
                         .toList()
         );    }
 
-    public ResponseEntity<ResponseMessage> updateUserEmail(UserMailDto userMailDto) throws NotFoundException {
-        return userMailService.updateUserEmail(userMailDto);
+    public ResponseEntity<UserMailDto> updateUserEmail(UserMailDto userMailDto) throws NotFoundException {
+        return ResponseEntity.ok(userMailDtoPopulator.populate(userMailService.updateUserEmail(userMailDto))); //todo
     }
 
     public ResponseEntity<ResponseMessage> deleteUserEmail(UserMailDto userMailDto) throws NotFoundException {
