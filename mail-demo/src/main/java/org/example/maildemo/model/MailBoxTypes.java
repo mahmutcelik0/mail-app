@@ -7,7 +7,9 @@ import lombok.*;
 @AllArgsConstructor
 public enum MailBoxTypes {
     INBOX("INBOX"),
-    DELETE("DELETE");
+    ARCHIVE("ARCHIVE"),
+    SENT("SENT"),
+    JUNK("JUNK");
 
     private String type;
 }

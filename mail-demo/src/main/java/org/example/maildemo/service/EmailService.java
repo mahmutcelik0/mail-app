@@ -22,6 +22,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -81,8 +82,13 @@ public class EmailService {
 
         User user = userService.findUserByMail(authentication.getPrincipal().toString());
 
-        return ResponseEntity.ok(user.getUserMails().stream().map(userMailDtoPopulator::populate).toList());
-    }
+        return ResponseEntity.ok(
+                user.getUserMails().stream()
+                        .filter(e -> e.getMail().getChild().isEmpty())
+                        .map(userMailDtoPopulator::populate)
+                        .sorted(Comparator.comparing((UserMailDto e) -> e.getMail().getCreationTime()).reversed())
+                        .toList()
+        );    }
 
     public ResponseEntity<ResponseMessage> updateUserEmail(UserMailDto userMailDto) throws NotFoundException {
         return userMailService.updateUserEmail(userMailDto);
