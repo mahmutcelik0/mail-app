@@ -15,10 +15,9 @@ import org.example.maildemo.model.MailBoxTypes;
 import org.example.maildemo.model.ResponseMessage;
 import org.example.maildemo.populator.UserMailDtoPopulator;
 import org.example.maildemo.repository.EmailRepository;
+import org.example.maildemo.utils.SecurityUtil;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -41,26 +40,25 @@ public class EmailService {
             return ResponseEntity.internalServerError().body(ResponseMessage.builder().message(CustomResponseMessage.USER_CAN_NOT_SEND_EMAIL_SELF).status(HttpStatus.INTERNAL_SERVER_ERROR).build());
         Set<User> toUsers = userService.findUsers(mailRequest.getTo());
         Set<Tag> tags = tagService.findTags(mailRequest.getTags());
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String senderMail = authentication.getPrincipal().toString();
+        String senderMail = SecurityUtil.getUserMail();
 
         Mail parent = null;
-        if(ObjectUtils.isNotEmpty(mailRequest.getRepliedMail())){
-            parent =emailRepository.findById(mailRequest.getRepliedMail().getId()).orElseThrow(()->new NotFoundException(CustomResponseMessage.EMAIL_DOES_NOT_EXIST));
+        if (ObjectUtils.isNotEmpty(mailRequest.getRepliedMail())) {
+            parent = emailRepository.findById(mailRequest.getRepliedMail().getId()).orElseThrow(() -> new NotFoundException(CustomResponseMessage.EMAIL_DOES_NOT_EXIST));
         }
 
-            Mail mail = Mail.builder()
-            .content(mailRequest.getContent() == null ? "" : mailRequest.getContent())
-            .creationTime(new Date())
-            .tags(tags)
-            .title(mailRequest.getTitle())
-            .sender(userService.findUserByMail(senderMail))
-            .parent(parent == null ? null : Set.of(parent))
-            .build();
+        Mail mail = Mail.builder()
+                .content(mailRequest.getContent() == null ? "" : mailRequest.getContent())
+                .creationTime(new Date())
+                .tags(tags)
+                .title(mailRequest.getTitle())
+                .sender(userService.findUserByMail(senderMail))
+                .parent(parent == null ? null : Set.of(parent))
+                .build();
 
-        if(!CollectionUtils.isEmpty(mail.getParent())){
-            mail.getParent().forEach(e-> {
-                if(CollectionUtils.isEmpty(e.getChild())) e.setChild(Set.of(e));
+        if (!CollectionUtils.isEmpty(mail.getParent())) {
+            mail.getParent().forEach(e -> {
+                if (CollectionUtils.isEmpty(e.getChild())) e.setChild(Set.of(e));
                 else e.getChild().add(e);
             });
         }
@@ -73,15 +71,11 @@ public class EmailService {
     }
 
     private boolean doesUserSendEmailSelf(List<MailUserDto> mailUserDtoList) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String senderMail = authentication.getPrincipal().toString();
-        return mailUserDtoList.stream().anyMatch(e -> e.getEmail().equalsIgnoreCase(senderMail));
+        return mailUserDtoList.stream().anyMatch(e -> e.getEmail().equalsIgnoreCase(SecurityUtil.getUserMail()));
     }
 
     public ResponseEntity<List<UserMailDto>> getUserEmails() throws NotFoundException {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        User user = userService.findUserByMail(authentication.getPrincipal().toString());
+        User user = userService.findUserByMail(SecurityUtil.getUserMail());
 
         return ResponseEntity.ok(
                 user.getUserMails().stream()
@@ -89,10 +83,11 @@ public class EmailService {
                         .map(userMailDtoPopulator::populate)
                         .sorted(Comparator.comparing((UserMailDto e) -> e.getMail().getCreationTime()).reversed())
                         .toList()
-        );    }
+        );
+    }
 
     public ResponseEntity<UserMailDto> updateUserEmail(UserMailDto userMailDto) throws NotFoundException {
-        return ResponseEntity.ok(userMailDtoPopulator.populate(userMailService.updateUserEmail(userMailDto))); //todo
+        return ResponseEntity.ok(userMailDtoPopulator.populate(userMailService.updateUserEmail(userMailDto)));
     }
 
     public ResponseEntity<ResponseMessage> deleteUserEmail(UserMailDto userMailDto) throws NotFoundException {

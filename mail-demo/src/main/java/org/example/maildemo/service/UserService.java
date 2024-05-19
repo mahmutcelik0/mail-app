@@ -10,10 +10,9 @@ import org.example.maildemo.exception.NotFoundException;
 import org.example.maildemo.model.ResponseMessage;
 import org.example.maildemo.populator.UserDtoPopulator;
 import org.example.maildemo.repository.UserRepository;
+import org.example.maildemo.utils.SecurityUtil;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -63,7 +62,6 @@ public class UserService {
     }
 
     public UserDto getUserByToken() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        return userDtoPopulator.populate(userRepository.findByEmail(authentication.getPrincipal().toString()).orElse(null));
+        return userDtoPopulator.populate(userRepository.findByEmail(SecurityUtil.getUserMail()).orElse(null));
     }
 }

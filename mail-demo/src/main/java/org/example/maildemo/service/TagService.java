@@ -1,6 +1,7 @@
 package org.example.maildemo.service;
 
 import lombok.RequiredArgsConstructor;
+import org.example.maildemo.constants.CustomResponseMessage;
 import org.example.maildemo.entity.Tag;
 import org.example.maildemo.exception.NotFoundException;
 import org.example.maildemo.repository.TagRepository;
@@ -15,7 +16,7 @@ import java.util.stream.Collectors;
 public class TagService {
     private final TagRepository tagRepository;
 
-    public List<Tag> findAll(){
+    public List<Tag> findAll() {
         return tagRepository.findAll();
     }
 
@@ -24,9 +25,9 @@ public class TagService {
     }
 
     public Set<Tag> findTags(List<String> tags) {
-        return tags.stream().map(e-> {
+        return tags.stream().map(e -> {
             try {
-                return tagRepository.findTagByName(e).orElseThrow(()-> new NotFoundException("TAG NOT FOUND"));
+                return tagRepository.findTagByName(e).orElseThrow(() -> new NotFoundException(CustomResponseMessage.TAG_NOT_FOUND));
             } catch (NotFoundException ex) {
                 throw new RuntimeException(ex);
             }
